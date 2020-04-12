@@ -1,0 +1,13 @@
+node_modules/
+bower_components/
+nbproject
+._*
+.vagrant
+.~lock.*
+.buildpath
+.DS_Store
+.project
+.settings
+vendor
+composer.phar
+package-lock.json
