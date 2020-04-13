@@ -1,11 +1,13 @@
 describe('Fluxo de compra', () => {
+    let productUrl;
+
     before( () => {
         //cy.login();
     });
     // it.only
     // it.skip
 
-    it.skip('Painel do cliente - edidos', () => {
+    it.skip('Painel do cliente - Pedidos', () => {
         cy.setCookie('tkt', app_cookie);
         cy.visit('/painel-do-cliente/pedidos');
         cy.get('.wd-profile-orders .wd-title').should('contain', 'Histórico de pedidos');
@@ -14,7 +16,7 @@ describe('Fluxo de compra', () => {
     });
 
     it('Página inicial', () => {
-        // acesas a home
+        // acessa a home
         cy.visit('/');
         cy.get('body')
             .should( body => {
@@ -43,10 +45,14 @@ describe('Fluxo de compra', () => {
         // clica no primeiro produto que não seja um kit
         cy.get('.wd-product-line[data-name]:not(:contains("Kit")):first h3 a')
             .then( product => {
-                window.productUrl = Cypress.$(product).attr('href');
+                // window.productUrl = Cypress.$(product).attr('href');
+                productUrl = Cypress.$(product).attr('href');
             })
             //.click();
 
+        /**
+         * forma usando route para add to cart
+         */
         /*
         cy.get('.buy-box .wd-buy-button form:visible')
             .within( (form) => {
@@ -74,7 +80,7 @@ describe('Fluxo de compra', () => {
 
     it('Detalhe do produto', () => {
         // acessa o produto
-        cy.visit(window.productUrl);
+        cy.visit(productUrl);
         
         // verifica se a página é de um produto válido
         cy.get('body')
