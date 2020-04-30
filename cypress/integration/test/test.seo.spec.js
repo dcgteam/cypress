@@ -13,6 +13,11 @@ describe('SEO', () => {
     it('Acessa a página inicial', () => {
         let time = new Date();
         cy.visit('/');
+    });
+
+    it('Tempo de carregamento inferior à 10s', () => {
+        let time = new Date();
+        cy.visit('/');
         cy.window().then( win => {
             urlCdn = win.browsingContext.Common.ImagesPath.Base.Cdn.replace('https:');
             time = (new Date() - time) / 1000;
@@ -58,9 +63,10 @@ describe('SEO', () => {
         let assetsNoCdn = 0;
         cy.get('[src^="/"]')
             .each( (asset) => {
-                if (asset[0].src.indexOf(urlCdn) != -1 || asset[0].src.indexOf( Cypress.config().baseUrl ) != -1) {
-                    assetsNoCdn++;
-                    console.log(asset[0].src);
+                if ( asset[0].src.indexOf('browsing_context') == -1 && ( asset[0].src.indexOf(urlCdn) != -1 ||  asset[0].src.indexOf( Cypress.config().baseUrl ) != -1 ) ) {
+                    console.log('## ' + asset[0].src);
+                    assetsNoCdn++;                    
+                    //cy.log(asset[0].src);
                 }
                 return assetsNoCdn;
             })
@@ -79,7 +85,16 @@ describe('SEO', () => {
             .should('have.length', 0);
     });
 
+    it('Banners sem lazyload', () => {
+        //cy.get('.wd-marketing-banner img:not(.lazyload)')
+        //    .should('have.length', 0);
+
+        cy.get('.wd-marketing-banner:not(.lazyload)')
+            .should('have.length', 0);
+    });
+
     it('Acesso sem www', () => {
+        /*
         cy.request( {
             failOnStatusCode: false,
             url: Cypress.config().baseUrl.replace('www.', '')
@@ -89,5 +104,33 @@ describe('SEO', () => {
             .should( response => {
                 expect(response.status).to.match(/30/);
             });
+        */
+        cy.request( {
+            failOnStatusCode: false,
+            followRedirect: false,
+            url: Cypress.config().baseUrl.replace('www.', '')
+        }).then( response => {
+            expect(response.status).to.match(/30/);
+        });
+    });
+
+    it('Acesso por http', () => {
+        cy.request( {
+            failOnStatusCode: false,
+            followRedirect: false,
+            url: Cypress.config().baseUrl.replace('https', 'http')
+        }).then( response => {
+            expect(response.status).to.match(/30/);
+        });
+    });
+
+    it('Acesso por http e sem www', () => {
+        cy.request( {
+            failOnStatusCode: false,
+            followRedirect: false,
+            url: Cypress.config().baseUrl.replace('https://www.', 'http://')
+        }).then( response => {
+            expect(response.status).to.match(/30/);
+        });
     });
 });
