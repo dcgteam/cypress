@@ -7,6 +7,7 @@ describe('Fluxo de compra', () => {
     // it.only
     // it.skip
 
+    /*
     it.skip('Painel do cliente - Pedidos', () => {
         cy.setCookie('tkt', app_cookie);
         cy.visit('/painel-do-cliente/pedidos');
@@ -14,6 +15,7 @@ describe('Fluxo de compra', () => {
         cy.url()
             .should('contain', '/pedidos');
     });
+    */
 
     it('Página inicial', () => {
         // acessa a home
@@ -28,12 +30,16 @@ describe('Fluxo de compra', () => {
         // acessa a home
         cy.visit('/');
 
+        // abre modal de pesquisa
+        cy.get('#icone-busca')
+            .click({force: true});
+
         // preenche o campo de busca
-        cy.get('#top-search .wd-search form [name="t"]')
-            .type('vitamina');
+        cy.get('.wd-search form [name="t"]')
+            .type('camisa');
 
         // submete a pesquisa
-        cy.get('#top-search .wd-search form')
+        cy.get('.wd-search form')
             .submit();
         
         // verifica se o total de registros encontrados é mais do zero
@@ -124,10 +130,12 @@ describe('Fluxo de compra', () => {
         cy.url()
             .should('contain', '/carrinho');
 
-        cy.get('.botoes-topo .wd-checkout-basket-buttons > .bt-checkout')
+        cy.get('.wd-checkout-basket-buttons > .bt-checkout')
+            /*
             .should( button => {
                 expect(button).to.have.length(1);
             })
+            */
             .click();        
     });
     /*
